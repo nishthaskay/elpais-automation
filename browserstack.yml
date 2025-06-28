@@ -1,0 +1,52 @@
+version: 2
+run_settings:
+  cypress_config_file: ""  # Not applicable, since you're using Selenium
+  project_name: "ElPais Automation"
+  build_name: "Build 1.0"
+  session_name: "ElPais Test"
+  local: false
+  debug: true
+  networkLogs: true
+  selenium_version: "4.20.0"  # Update to match your dependencies
+
+  # Test framework and command to run
+  source: "selenium"
+  test_framework: "testng"
+  test_runner:
+    command: mvn test
+
+environments:
+  # Desktop Browsers
+  - browser: "chrome"
+    browser_version: "latest"
+    os: "Windows"
+    os_version: "10"
+
+  - browser: "firefox"
+    browser_version: "latest"
+    os: "Windows"
+    os_version: "10"
+
+  - browser: "edge"
+    browser_version: "latest"
+    os: "Windows"
+    os_version: "10"
+
+  - browser: "safari"
+    browser_version: "latest"
+    os: "OS X"
+    os_version: "Ventura"
+
+  # Real Mobile Devices
+  - device: "iPhone 14"
+    os_version: "16"
+    real_mobile: true
+
+  - device: "Google Pixel 7"
+    os_version: "13.0"
+    real_mobile: true
+
+# BrowserStack credentials
+credentials:
+  username: ${BROWSERSTACK_USERNAME}
+  access_key: ${BROWSERSTACK_ACCESS_KEY}
