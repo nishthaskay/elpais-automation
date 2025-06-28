@@ -1,3 +1,5 @@
+userName: nishthasharma_xqLiZP
+accessKey: m3QZzC28cP1pviDvfG9q
 framework: testng
 
 platforms:
@@ -39,8 +41,3 @@ CUSTOM_TAG_1: "UI Functional Coverage"
 debug: true
 networkLogs: true
 consoleLogs: info
-
-# BrowserStack credentials
-credentials:
-  username: ${BROWSERSTACK_USERNAME}
-  access_key: ${BROWSERSTACK_ACCESS_KEY}
