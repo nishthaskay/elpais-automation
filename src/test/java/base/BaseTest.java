@@ -98,8 +98,11 @@ public class BaseTest {
     }
 
     @AfterMethod(alwaysRun = true)
-    public void tearDown() {
+    public void tearDown(ITestResult result) {
         if (driver != null) {
+            String testName = result.getMethod().getMethodName();
+            String status = result.isSuccess() ? "passed" : "failed";
+            BrowserStackUtil.markSession(driver, testName, status);
             driver.quit();
         }
     }
