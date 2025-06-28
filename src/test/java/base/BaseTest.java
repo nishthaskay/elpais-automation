@@ -10,8 +10,6 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.safari.SafariDriver;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Optional;
-import org.testng.annotations.Parameters;
 
 import java.net.URL;
 import java.time.Duration;
@@ -20,9 +18,14 @@ import java.util.HashMap;
 public class BaseTest {
     protected WebDriver driver;
 
-    @Parameters({ "browser", "useBrowserStack" })
     @BeforeMethod(alwaysRun = true)
-    public void setup(@Optional("chrome") String browser, @Optional("false") boolean useBrowserStack) throws Exception {
+    public void setup() throws Exception {
+        String browser = System.getProperty("browser", "chrome");
+
+        String USERNAME = System.getenv("BROWSERSTACK_USERNAME");
+        String ACCESS_KEY = System.getenv("BROWSERSTACK_ACCESS_KEY");
+
+        boolean useBrowserStack = (USERNAME != null && ACCESS_KEY != null);
 
         if (useBrowserStack) {
             DesiredCapabilities capabilities = new DesiredCapabilities();
@@ -36,14 +39,18 @@ public class BaseTest {
                     capabilities.setCapability("browserName", "Edge");
                     capabilities.setCapability("browserVersion", "latest");
                     break;
+                case "safari":
+                    capabilities.setCapability("browserName", "Safari");
+                    capabilities.setCapability("browserVersion", "latest");
+                    break;
                 case "iphone":
-                    capabilities.setCapability("browserName", "iPhone");
+                    capabilities.setCapability("browserName", "Safari");
                     capabilities.setCapability("device", "iPhone 14");
                     capabilities.setCapability("realMobile", "true");
                     capabilities.setCapability("os_version", "16");
                     break;
                 case "pixel":
-                    capabilities.setCapability("browserName", "Android");
+                    capabilities.setCapability("browserName", "Chrome");
                     capabilities.setCapability("device", "Google Pixel 7");
                     capabilities.setCapability("realMobile", "true");
                     capabilities.setCapability("os_version", "13.0");
@@ -63,12 +70,10 @@ public class BaseTest {
 
             capabilities.setCapability("bstack:options", bstackOptions);
 
-            String USERNAME = System.getenv("BROWSERSTACK_USERNAME");
-            String ACCESS_KEY = System.getenv("BROWSERSTACK_ACCESS_KEY");
             String URL = "https://" + USERNAME + ":" + ACCESS_KEY + "@hub-cloud.browserstack.com/wd/hub";
-
             driver = new RemoteWebDriver(new URL(URL), capabilities);
         } else {
+            // Local execution
             switch (browser.toLowerCase()) {
                 case "firefox":
                     WebDriverManager.firefoxdriver().setup();
