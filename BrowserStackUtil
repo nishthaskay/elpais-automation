@@ -1,0 +1,38 @@
+package utils;
+
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.RemoteWebDriver;
+
+public class BrowserStackUtil {
+
+    /**
+     * Marks the session as passed/failed on BrowserStack and sets a readable name.
+     *
+     * @param driver  The WebDriver instance (must be RemoteWebDriver)
+     * @param name    A meaningful name for the test session
+     * @param status  "passed" or "failed"
+     */
+    public static void markSession(WebDriver driver, String name, String status) {
+        if (!(driver instanceof JavascriptExecutor)) {
+            return; // Skip if not using RemoteWebDriver
+        }
+
+        try {
+            JavascriptExecutor js = (JavascriptExecutor) driver;
+
+            // Set session name
+            js.executeScript("browserstack_executor: {\"action\": \"setSessionName\", \"arguments\": {\"name\":\"" + name + "\"}}");
+
+            // Set session status
+            js.executeScript("browserstack_executor: {\"action\": \"setSessionStatus\", \"arguments\": {\"status\":\"" + status + "\", \"reason\": \"Test " + status + "\"}}");
+
+            // Print session URL
+            String sessionId = ((RemoteWebDriver) driver).getSessionId().toString();
+            String sessionURL = "https://automate.browserstack.com/sessions/" + sessionId;
+            System.out.println("BrowserStack Public URL: " + sessionURL);
+        } catch (Exception e) {
+            System.out.println("Failed to update BrowserStack session metadata: " + e.getMessage());
+        }
+    }
+}
